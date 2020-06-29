@@ -1,16 +1,17 @@
-FROM centos:7.5.1804
-MAINTAINER pader "huangmnlove@163.com"
+# Dockerfile for alibab nacos to reduce offical images size
+FROM openjdk:8-jre-alpine
+MAINTAINER caoshengjie <cao.shengjie777@gmail.com>
 
 # set environment
-ENV MODE="cluster" \
-    PREFER_HOST_MODE="ip"\
-    BASE_DIR="/home/nacos" \
-    CLASSPATH=".:/home/nacos/conf:$CLASSPATH" \
-    CLUSTER_CONF="/home/nacos/conf/cluster.conf" \
-    FUNCTION_MODE="all" \
-    JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk" \
+ENV BASE_DIR="/home/nacos" \
+    MODE="cluster" \
     NACOS_USER="nacos" \
-    JAVA="/usr/lib/jvm/java-1.8.0-openjdk/bin/java" \
+    PREFER_HOST_MODE="ip"\
+    CLASSPATH=".:${BASE_DIR}/conf:$CLASSPATH" \
+    CLUSTER_CONF="${BASE_DIR}/conf/cluster.conf" \
+    FUNCTION_MODE="all" \
+    # JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk" \
+    JAVA="${JAVA_HOME}/bin/java" \
     JVM_XMS="2g" \
     JVM_XMX="2g" \
     JVM_XMN="1g" \
@@ -24,18 +25,16 @@ ARG NACOS_VERSION=1.3.0
 
 WORKDIR /$BASE_DIR
 
-RUN set -x \
-    && yum update -y \
-    && yum install -y java-1.8.0-openjdk java-1.8.0-openjdk-devel wget iputils nc  vim libcurl\
+RUN echo "http://mirrors.aliyun.com/alpine/v3.8/main" > /etc/apk/repositories \
+    && echo "http://mirrors.aliyun.com/alpine/v3.8/community" >> /etc/apk/repositories \
+    && apk update upgrade \
+    && apk add --no-cache procps wget bash tzdata \
+    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && echo "$TIME_ZONE" > /etc/timezone \
     && wget  https://github.com/alibaba/nacos/releases/download/${NACOS_VERSION}/nacos-server-${NACOS_VERSION}.tar.gz -P /home \
     && tar -xzvf /home/nacos-server-${NACOS_VERSION}.tar.gz -C /home \
     && rm -rf /home/nacos-server-${NACOS_VERSION}.tar.gz /home/nacos/bin/* /home/nacos/conf/*.properties /home/nacos/conf/*.example /home/nacos/conf/nacos-mysql.sql \
-    && yum autoremove -y wget \
-    && ln -snf /usr/share/zoneinfo/$TIME_ZONE /etc/localtime && echo $TIME_ZONE > /etc/timezone \
-    && yum clean all
-
-
-
+    && apk del wget
 
 ADD bin/docker-startup.sh bin/docker-startup.sh
 ADD conf/application.properties conf/application.properties
