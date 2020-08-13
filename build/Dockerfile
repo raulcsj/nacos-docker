@@ -27,14 +27,14 @@ WORKDIR /$BASE_DIR
 
 RUN apt-get update \
     && apt-get upgrade \
-    && apt-get install wget bash tzdata iputils-ping netcat vim libcurl4-openssl-dev \
+    && apt-get install -y wget bash tzdata iputils-ping netcat vim libcurl4-openssl-dev \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "$TIME_ZONE" > /etc/timezone \
     && wget  https://github.com/alibaba/nacos/releases/download/${NACOS_VERSION}/nacos-server-${NACOS_VERSION}.tar.gz -P /home \
     && tar -xzvf /home/nacos-server-${NACOS_VERSION}.tar.gz -C /home \
     && rm -rf /home/nacos-server-${NACOS_VERSION}.tar.gz /home/nacos/bin/* /home/nacos/conf/*.properties /home/nacos/conf/*.example /home/nacos/conf/nacos-mysql.sql \
     && apt-get remove wget \
-    && apt-get autoremove
+    && apt-get autoclean
 
 ADD bin/docker-startup.sh bin/docker-startup.sh
 ADD conf/application.properties conf/application.properties
