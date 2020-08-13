@@ -27,7 +27,7 @@ WORKDIR /$BASE_DIR
 
 RUN apt-get update \
     && apt-get upgrade \
-    && apt-get install wget bash tzdata iputils nc vim libcurl \
+    && apt-get install wget bash tzdata iputils-ping netcat vim libcurl4-openssl-dev \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "$TIME_ZONE" > /etc/timezone \
     && wget  https://github.com/alibaba/nacos/releases/download/${NACOS_VERSION}/nacos-server-${NACOS_VERSION}.tar.gz -P /home \
