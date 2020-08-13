@@ -1,5 +1,5 @@
 # Dockerfile for alibab nacos to reduce offical images size
-FROM openjdk:8
+FROM openjdk:8-alpine
 MAINTAINER caoshengjie <cao.shengjie777@gmail.com>
 
 # set environment
