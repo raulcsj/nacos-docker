@@ -33,7 +33,7 @@ RUN apt-get update \
     && wget  https://github.com/alibaba/nacos/releases/download/${NACOS_VERSION}/nacos-server-${NACOS_VERSION}.tar.gz -P /home \
     && tar -xzvf /home/nacos-server-${NACOS_VERSION}.tar.gz -C /home \
     && rm -rf /home/nacos-server-${NACOS_VERSION}.tar.gz /home/nacos/bin/* /home/nacos/conf/*.properties /home/nacos/conf/*.example /home/nacos/conf/nacos-mysql.sql \
-    && apt-get remove wget \
+    && apt-get autoremove -y wget \
     && apt-get autoclean
 
 ADD bin/docker-startup.sh bin/docker-startup.sh
